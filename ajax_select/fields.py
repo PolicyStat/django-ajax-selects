@@ -13,9 +13,9 @@ from django.conf import settings
 class AutoCompleteSelectWidget(forms.widgets.TextInput):
 
     """  widget to select a model """
-    
+
     add_link = None
-    
+
     def __init__(self,
                  channel,
                  help_text='',
@@ -97,9 +97,9 @@ class AutoCompleteSelectField(forms.fields.CharField):
 class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
 
     """ widget to select multiple models """
-    
+
     add_link = None
-    
+
     def __init__(self,
                  channel,
                  help_text='',
@@ -146,15 +146,18 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
             'extra_attrs': mark_safe(flatatt(final_attrs)),
             'func_slug': self.html_id.replace("-",""),
             'add_link' : self.add_link,
-            'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX            
+            'admin_media_prefix' : settings.ADMIN_MEDIA_PREFIX
         }
         return mark_safe(render_to_string(('autocompleteselectmultiple_%s.html' % self.channel, 'autocompleteselectmultiple.html'),context))
 
     def value_from_datadict(self, data, files, name):
-        # eg. u'members': [u'|229|4688|190|']
-        return [long(val) for val in data.get(name,'').split('|') if val]
+        values = data.getlist(name)
 
+        # Handle pipe separated syntax, e.g u'members': [u'|229|4688|190|']
+        if len(values) == 1 and '|' in values[0]:
+            values = [val for val in values[0].split('|') if val]
 
+        return [long(val) for val in values]
 
 
 class AutoCompleteSelectMultipleField(forms.fields.CharField):
