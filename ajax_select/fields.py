@@ -42,7 +42,7 @@ class AutoCompleteSelectWidget(forms.widgets.TextInput):
                 current_name=current_name,
                 help_text=self.help_text,
                 extra_attrs=mark_safe(flatatt(self.attrs))
-                )        
+                )
         return mark_safe(render_to_string(('autocompleteselect_%s.html' % self.channel, 'autocompleteselect.html'),vars))
 
     def value_from_datadict(self, data, files, name):
@@ -143,10 +143,13 @@ class AutoCompleteSelectMultipleWidget(forms.widgets.SelectMultiple):
 
 
     def value_from_datadict(self, data, files, name):
-        #eg u'members': [u'|229|4688|190|']
-        return [long(val) for val in data.get(name,'').split('|') if val]
+        values = data.getlist(name)
 
+        # Handle pipe separated syntax, e.g u'members': [u'|229|4688|190|']
+        if len(values) == 1 and '|' in values[0]:
+            values = [val for val in values[0].split('|') if val]
 
+        return [long(val) for val in values]
 
 
 class AutoCompleteSelectMultipleField(forms.fields.CharField):
