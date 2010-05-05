@@ -17,13 +17,10 @@ def ajax_lookup(request,channel):
         if 'q' not in request.POST:
             return HttpResponse('') # suspicious
         query = request.POST['q']
-    
+
     lookup_channel = get_lookup(channel)
-    
-    if query:
-        instances = lookup_channel.get_query(query,request)
-    else:
-        instances = []
+
+    instances = lookup_channel.get_query(query,request)
 
     results = []
     for item in instances:
