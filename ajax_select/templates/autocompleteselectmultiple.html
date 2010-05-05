@@ -28,6 +28,8 @@ jQuery(document).ready(function($){{% block script %}
 			addKiller_{{func_slug}}(data[1],id);
 			$("#{{html_id}}_text").val('');
 			$("#{{html_id}}_on_deck").trigger("added");
+		} else {
+			$("#{{html_id}}_text").val('');
 		}
 	}
 	$("#{{html_id}}_text").result(receiveResult);
